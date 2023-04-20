@@ -101,10 +101,6 @@ class Anagpt:
             print('')
 
         def clear_screen_and_history():
-            if self.history:
-                confirm = input('Save the chat history? y/n:')
-                if confirm == 'y' or confirm == 'Y' or confirm == 'yes' or confirm == 'yes':
-                    self.save_chat_history()
             run('cls', shell=True, encoding="utf-8")
             self.clear_history()
             self.show_welcome_message()
@@ -536,12 +532,6 @@ class Anagpt:
         self.history = []
 
     def activate_env(self, env_name):
-
-        if self.history:
-            confirm = input('Save the current chat history? y/n:')
-            if confirm == 'y' or confirm == 'Y' or confirm == 'yes' or confirm == 'yes':
-                self.save_chat_history()
-
         env_names = [f.name for f in os.scandir(self.envs_root_path) if f.is_dir()]
         if env_name not in env_names:
             print(env_name, 'does not exist.')
