@@ -1,0 +1,8 @@
+# Default ignored files
+config_private.py
+chat_online.py
+/ico/anagpt.pptx
+.idea
+/history
+/envs/test
+/system
