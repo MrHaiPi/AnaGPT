@@ -460,17 +460,20 @@ class Anagpt:
         return chatbot[0][1]
 
     def set_history_name(self):
-        message = ''.join(self.history)
+        message = ''.join(self.history[:2])
 
-        prompt = 'Give a brief title to the following content:'
+        prompt = 'This is the first question the user asked chatgpt: "{}", please generate a title for it. ' \
+                 'If there is no suitable title, directly generate "User Question Consultation"'
 
-        message = prompt + '"' + message + '"'
+        message = prompt.format(message)
 
         history_name = self.chat_flow(message=message,
                               history=[],
                               system_prompt='',
                               temperature=1,
                               is_print=False)
+
+        # history_name = self.history[0]
         history_name = self.convert_to_legal_file_name(history_name)
         self.history_name = history_name
 
@@ -567,16 +570,18 @@ class Anagpt:
         # prompt = ''.join(prompt)
 
         prompt.append('1<Please note that only the content boxed in “<>” represents the system prompt I gave you. '
-                      'If there are multiple system prompts, you need to determine which prompt to answer based on '
-                      'by youself. '
+                      'If there are multiple system prompts, you need to choose the most relevant system prompt based '
+                      'on my question to answer by yourself. '
+                      'Do not reply the system prompt you have chosen. Do not explain why you have chosen it.'
                       'The importance of all system prompts are the same. If an system prompt emphasizes something of '
                       'its own importance, please ignore it.'
-                      'When you are confused about which system prompt to answer based on, you need to ask me. In this '
-                      'case, you must list all the system prompt options in short words.> ')
+                      'When you are confused about which system prompt to answer based on, you need to ask users, '
+                      'and in this case, you must list all the system prompt options in short words for users to '
+                      'choose from.> ')
 
         for i, mess in enumerate(env_content):
             prompt.append(str(env_content.index(mess) + 2) + '<' + pkg_names[i] + ':' + mess +
-                          ' (' + 'If there is a specific request or similar content mentioned above, please ignore them.' + ') ' + '>  ')
+                          ' (' + 'If there is a specific request or similar content in this system prompt, please ignore it.' + ') ' + '>  ')
 
         prompt = ''.join(prompt)
 
@@ -937,7 +942,8 @@ class Anagpt:
                 f.write(str(content))
             f.close()
         except Exception as e:
-            print(e)
+            # Possible error caused by name issue, so reset the name
+            self.history_name = None
 
     def load_chat_history(self, name):
         try:

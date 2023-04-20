@@ -109,7 +109,7 @@ def predict(inputs, top_p=1, temperature=0.8, chatbot=[], history=[], system_pro
                     yield chatbot, history, status_text
 
                 except Exception as e:
-                    traceback.print_exc()
+                    # traceback.print_exc()
                     yield chatbot, history, "Json解析不合常规"
                     chunk = get_full_error(chunk, stream_response)
                     error_msg = chunk.decode()
