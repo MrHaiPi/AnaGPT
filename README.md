@@ -23,7 +23,7 @@
 ---
 
 ## 🎆 Highlights
-&emsp; &emsp; AnaGPT是一个参考Anaconda工作模式，基于终端命令界面实现的chatGPT类自然语言处理程序。它可以一次性便捷加载多个专业prompt，并根据用户问题自动选择prompt进行回答。
+&emsp; &emsp; AnaGPT是一个参考Anaconda工作模式，基于终端命令界面实现的chatGPT类自然语言处理程序。它可以一次性便捷加载多个专业prompt，并根据用户问题自动综合所有prompt或选择其中一个进行回答。
 
 - 😎 **更加酷**&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 原生终端窗口交互
 - 🤲 **更稳定** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; API接口避免网页 F5 / minute 
@@ -38,7 +38,7 @@
 &emsp; &emsp; 当你给某个```env (prompts)```安装了多个```pkg (prompt)```时，只需要在提问时输入一些简单的字词，AnaGPT便会自动选择已安装的最合适的```pkg (prompt)```来进行回答。下面是AnaGPT与chatGPT关于相同问题的回答对比。可以发现AnaGPT可以通过在问题后面加一些简单的提示，它就可以自动找到已安装的专业的```pkg (prompt)```进行回答。当然，你也可以不在问题的后面加任何的提示，它会自动根据你的问题选择```pkg (prompt)```
 
 
-![AnaGPT](./example/AnaGPTvsChatGPT.jpg)
+![AnaGPT](./example/AnaGPTvsChatGPT.png)
 
 
 ## 👋🏼 Intro

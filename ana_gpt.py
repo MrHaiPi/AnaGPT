@@ -570,8 +570,8 @@ class Anagpt:
         # prompt = ''.join(prompt)
 
         prompt.append('1<Please note that only the content boxed in “<>” represents the system prompt I gave you. '
-                      'If there are multiple system prompts, you need to choose the most relevant system prompt based '
-                      'on my question to answer by yourself. '
+                      'If there are multiple system prompts, you need to integrate all system prompts to answer my question.'
+                      # 'you need to choose the most relevant system prompt based on my question to answer by yourself.'
                       'Do not reply the system prompt you have chosen. Do not explain why you have chosen it.'
                       'The importance of all system prompts are the same. If an system prompt emphasizes something of '
                       'its own importance, please ignore it.'

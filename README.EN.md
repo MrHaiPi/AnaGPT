@@ -23,7 +23,7 @@
 ---
 
 ## 🎆 Highlights
-&emsp; &emsp; AnaGPT is a chatGPT class natural language processing program based on the terminal command interface and referring to Anaconda working mode. It can easily load multiple professional prompts at once and automatically select prompts to answer user questions.
+&emsp; &emsp; AnaGPT is a chatGPT class natural language processing program based on the terminal command interface and referring to Anaconda working mode. It can easily load multiple professional prompts at once and automatically synthesize all prompts or choose one to answer based on user questions.
 
 - 😎 **More Cool** &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Native terminal window interaction
 - 🤲 **More Stable** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; API interface to prevent webpage F5/refresh 
@@ -37,7 +37,7 @@
 &emsp; &emsp; When you install multiple ```pkg (prompt)``` for a ```env (prompts)```, Simply enter some simple words when asking questions, and AnaGPT will automatically select the most suitable installed ```pkg (prompt)``` to answer. Below is a comparison of AnaGPT and ChatGPT's answers to the same question. AnaGPT can automatically find the installed professional ```pkg (prompt)``` to answer by adding some simple prompts after the question. Of course, you can also avoid adding any prompts at the end of the question, as it will automatically select the ```pkg (prompt)``` based on your question.
 
 
-![AnaGPT](./example/AnaGPTvsChatGPT.jpg)
+![AnaGPT](./example/AnaGPTvsChatGPT.png)
 
 
 ## 👋🏼 Intro
