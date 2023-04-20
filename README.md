@@ -222,8 +222,8 @@ The `commands` dictionary contains the commands that the user can enter and thei
 - `gpt help -n *`: display a help message for the command with the given name. The `*` should be replaced with the name of the command to get help for.
 - `gpt install -n *`: install a new package with the given name. The `*` should be replaced with the name of the package to install. An optional `-c` flag can be used to specify the package content directly on the command line.
 - `gpt uninstall -n *`: uninstall the package with the given name. The `*` should be replaced with the name of the package to uninstall.
-- `gpt localpkgs update`: update the list of locally available packages.
-- `gpt localpkgs list`: display a list of locally available packages.
+- `gpt pkgs update`: update the list of locally available packages.
+- `gpt pkgs list`: display a list of locally available packages.
 - `gpt list`: display a list of packages in the current environment.
 - `gpt vim`: open the Vim editor to edit the content of a package in the current environment.
 - `gpt clear`: clear the screen and chat history.
