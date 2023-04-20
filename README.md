@@ -1,7 +1,7 @@
 ![AnaGPT](./ico/anagpt.png)
 
 <p align="center">
-  🎉 Using GPT like Anaconda🎉
+  🎉 Using GPT like Anaconda 🎉
 </p> 
 
 
