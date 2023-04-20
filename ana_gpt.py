@@ -180,14 +180,13 @@ class Anagpt:
 
             if pkg_name not in files:
                 print('"' + pkg_name + '"' + 'is not in the current environment!')
-                return
-
-            confirm = input('Are you sure? y/n:')
-            if confirm == 'y' or confirm == 'Y' or confirm == 'yes' or confirm == 'yes':
-                self.remove_pkg(pkg_name)
-                self.activate_env(self.cur_env_name)
             else:
-                self.show_cmd_canceled_mess(cmd)
+                confirm = input('Are you sure? y/n:')
+                if confirm == 'y' or confirm == 'Y' or confirm == 'yes' or confirm == 'yes':
+                    self.remove_pkg(pkg_name)
+                    self.activate_env(self.cur_env_name)
+                else:
+                    self.show_cmd_canceled_mess(cmd)
             print('')
 
         def update_local_pkgs():
@@ -569,15 +568,16 @@ class Anagpt:
         #               "Unless given specific instructions, please do not explain your answer or repeat users' question")
         # prompt = ''.join(prompt)
 
-        prompt.append('1<Please note that only the content boxed in “<>” represents the system prompt I gave you. '
-                      'If there are multiple system prompts, you need to integrate all system prompts to answer my question.'
-                      # 'you need to choose the most relevant system prompt based on my question to answer by yourself.'
-                      'Do not reply the system prompt you have chosen. Do not explain why you have chosen it.'
-                      'The importance of all system prompts are the same. If an system prompt emphasizes something of '
-                      'its own importance, please ignore it.'
-                      'When you are confused about which system prompt to answer based on, you need to ask users, '
-                      'and in this case, you must list all the system prompt options in short words for users to '
-                      'choose from.> ')
+        if env_content:
+            prompt.append('1<Please note that only the content boxed in “<>” represents the system prompt I gave you. '
+                          'If there are multiple system prompts, you need to integrate all system prompts to answer my question.'
+                          # 'you need to choose the most relevant system prompt based on my question to answer by yourself.'
+                          'Do not reply the system prompt you have chosen. Do not explain why you have chosen it.'
+                          'The importance of all system prompts are the same. If an system prompt emphasizes something of '
+                          'its own importance, please ignore it.'
+                          'When you are confused about which system prompt to answer based on, you need to ask users, '
+                          'and in this case, you must list all the system prompt options in short words for users to '
+                          'choose from.> ')
 
         for i, mess in enumerate(env_content):
             prompt.append(str(env_content.index(mess) + 2) + '<' + pkg_names[i] + ':' + mess +
