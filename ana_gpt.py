@@ -204,7 +204,7 @@ class Anagpt:
                 self.show_local_pkgs_list()
 
             print('')
-            print('Try "gpt install -n pkg_name" to install your favorite pkg in the current environment.')
+            print('Try "gpt install -n pkg_name" to install you favorite pkg in the current environment.')
             print('')
 
         def show_chat_history_list():
