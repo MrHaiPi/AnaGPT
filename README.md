@@ -1,7 +1,7 @@
 
 <h1> 
 <p align="center">
- <img src="./ico/anagptico.png" width="30"> <font size=10>AnaGPT</font>
+ <img src="./ico/anagptico.png" width="40"> <font size=10>AnaGPT</font>
 </p>
 </h1>
 
