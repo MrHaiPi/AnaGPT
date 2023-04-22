@@ -18,11 +18,11 @@ import win32api
 import win32con
 from win32com import client
 
-import predict
+from request_llm import chatGPT
 from chat_files import get_chat_files_content
 from dataio import copy_dir
 from multi_input import MultiInputInCmd
-from predict import predict as pd
+from request_llm.chatGPT import predict as pd
 
 VERSION = 'AnaGPT v1.0'
 
@@ -51,7 +51,7 @@ class Anagpt:
         self.chat_history_list = []
         self.cur_env_name = self.base_env_name
         self.system_prompt = None
-        self.base_model = predict.LLM_MODEL
+        self.base_model = chatGPT.LLM_MODEL
         self.cancel_output = False
 
         self.load_last_env_name_content()
@@ -845,7 +845,7 @@ class Anagpt:
             print('Load form {} successfully! Add {} new pkgs. Update {} pkgs.'.format(url, new_count, update_count))
 
         # proxies setting
-        proxies = predict.proxies
+        proxies = chatGPT.proxies
 
         # pkg url1
         url = "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
