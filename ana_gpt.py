@@ -179,7 +179,7 @@ class Anagpt:
             else:
                 confirm = input('Are you sure? y/n:')
                 if confirm == 'y' or confirm == 'Y' or confirm == 'yes' or confirm == 'yes':
-                    self.remove_pkg(pkg_name)
+                    print(self.remove_pkg(pkg_name))
                     self.activate_env(self.cur_env_name)
                 else:
                     self.show_cmd_canceled_mess(cmd)
@@ -783,10 +783,12 @@ class Anagpt:
             return e
 
     def convert_to_legal_file_name(self, text):
-        # 定义无效字符列表
-        invalid_chars = ["/", "\\", ":", "：", "!", "！", "*", "?", "\"", "<", ">", "|", " ", "`"]
-        for char in invalid_chars:
-            text = text.replace(char, "_")
+        # 替换非法字符
+        text = re.sub(r'[^\w\s-]', '_', text).strip().lower()
+        # 移除重复的连字符
+        text = re.sub(r'-+', '-', text)
+        # 去掉斜杠和反斜杠
+        text = text.replace('/', '_').replace('\\', '').replace(':', '').replace('：', '')
         return text
 
     def update_local_pkgs(self):
@@ -794,13 +796,11 @@ class Anagpt:
         def save_pkgs(prompts, url):
             new_count = 0
             update_count = 0
-
-
             for prompt in prompts:
                 content = prompt[1]
                 filename = prompt[0].lower()
 
-                self.convert_to_legal_file_name(filename)
+                filename = self.convert_to_legal_file_name(filename)
 
                 filename_nopath = filename
 
@@ -874,6 +874,9 @@ class Anagpt:
         dir_path = self.pkgs_root_path
         files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))
                  and not f.startswith('.') and not f.endswith('~')]
+
+        if len(files) == 0:
+            print('There is no pkgs found!')
 
         if describe_name:
             if describe_name in files:

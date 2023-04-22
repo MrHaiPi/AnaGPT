@@ -1,4 +1,9 @@
-![AnaGPT](./ico/anagpt.png)
+
+<h2> 
+<p align="center">
+ <img src="./ico/anagptico.png" width="40"> AnaGPT
+</p>
+</h2>
 
 <p align="center">
   🎉 Using GPT like Anaconda 🎉
