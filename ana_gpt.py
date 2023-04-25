@@ -119,7 +119,7 @@ class Anagpt:
             self.chat_flow(message=message,
                            history=[],
                            system_prompt='',
-                           temperature=1)
+                           temperature=0.1)
 
         def show_named_help_content(cmd):
             help_content = self.get_function_body(__file__, 'get_all_command_keyboards')
@@ -132,7 +132,7 @@ class Anagpt:
             self.chat_flow(message=message,
                            history=[],
                            system_prompt='',
-                           temperature=1)
+                           temperature=0.1)
 
         def show_version():
             self.show_version()
@@ -424,7 +424,7 @@ class Anagpt:
             self.chat_flow(message=message,
                            history=self.history,
                            system_prompt=self.system_prompt,
-                           temperature=0.7)
+                           temperature=0.8)
 
             # generate history name
             if not self.history_name:
