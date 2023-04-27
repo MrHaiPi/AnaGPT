@@ -222,7 +222,7 @@ If you have any suggestions or opinions, please create an Issue on GitHub or sen
 
 You can use the following command to operate AnaGPT:
 
-![Models](./example/gpt_help.jpg)
+![Help](./example/gpt_help.jpg)
 
 The above content can be obtained by entering the following command after running AnaGPT:
 ```

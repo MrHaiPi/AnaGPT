@@ -222,7 +222,7 @@ gpt create shortcut
 
 你可以使用如下命令操作AnaGPT:
 
-![Models](./example/gpt_help.jpg)
+![Help](./example/gpt_help.jpg)
 
 
 上述内容可在运行AnaGPT后通过输入如下命令来获得:
