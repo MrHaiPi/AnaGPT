@@ -463,10 +463,39 @@ class Anagpt:
                 thread.start()
 
     def chat_flow(self, message, history, system_prompt, temperature, is_print=True):
+        cursor_thread = None
+        if is_print:
+            # Define cursor states
+            CURSOR_STATES = ['-', '\\', '|', '/']
+
+            # Define global variable to control the running state of the thread
+            running = True
+
+            # Define the spinning cursor function and wrap it in a thread
+            def spinning_cursor():
+                while running:
+                    for cursor in CURSOR_STATES:
+                        # Output cursor state and flush output
+                        sys.stdout.write('\r' + cursor)
+                        sys.stdout.flush()
+
+                        # Wait for a short period of time
+                        time.sleep(0.1)
+                sys.stdout.write('\r' + '')
+                sys.stdout.flush()
+
+            # Create and start the spinning cursor thread
+            cursor_thread = threading.Thread(target=spinning_cursor)
+            cursor_thread.start()
+
         last_index = 0
         chatbot = []
         for chatbot, history, statusDisplay in self.chat_model.predict(message, chatbot=chatbot, history=history,
                                                        system_prompt=system_prompt, temperature=temperature):
+            if is_print:
+                running = False
+                cursor_thread.join()
+
             if self.cancel_output:
                 self.cancel_output = False
                 break
