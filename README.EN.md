@@ -47,7 +47,7 @@
 
 ## 🤖 Model List
 &emsp;&emsp;  Please note that the offline version of the model will run relatively slowly. Please download the offline version of the model here [Click here](https://huggingface.co/MrHaiPi/AnaGPT). Move the contents of the downloaded models folder to the corresponding location of your local project.
-![Models](./example/model_list.jpg)
+![Models](example/model.jpg)
 
 
 

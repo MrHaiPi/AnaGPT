@@ -49,7 +49,7 @@
 ## 🤖 Model List
 &emsp;&emsp;  请注意，离线版的模型运行会比较缓慢。 离线版的模型请在此处下载[Click here](https://huggingface.co/MrHaiPi/AnaGPT). 将下载的models文件夹的内容移动到你本地项目的对应位置即可。
 
-![Models](./example/model_list.jpg)
+![Models](example/model.jpg)
 
 
 ## 👋🏼 Intro
