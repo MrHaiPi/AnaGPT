@@ -1,0 +1,5 @@
+{
+  "version": 2.0,
+  "show_feature": true,
+  "new_feature": "增加了5种离线版chatGPT模型，目前共计10个模型，使用gpt model change更改模型:chatglm, chinese_alpaca, chinese_chat_llama, gpt_for_all, vicuna <-> 优化了相关代码，修复了一些bugs"
+}
