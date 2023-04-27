@@ -1,6 +1,7 @@
 import ast
 import atexit
 import csv
+import gc
 import json
 import os
 import platform
@@ -9,6 +10,7 @@ import shutil
 import signal
 import sys
 import threading
+import time
 from io import StringIO
 from subprocess import run
 
@@ -18,17 +20,16 @@ import win32api
 import win32con
 from win32com import client
 
-from request_llm import chatGPT
 from chat_files import get_chat_files_content
 from dataio import copy_dir
+import gpt
+from models.chat_gpt.toolbox import get_conf
+from gpt import GPT
 from multi_input import MultiInputInCmd
-from request_llm.chatGPT import predict as pd
-
-VERSION = 'AnaGPT v1.0'
 
 
 class Anagpt:
-    def __init__(self):
+    def __init__(self, version):
         self.envs_root_path = os.path.join(os.getcwd(), 'envs')
         if not os.path.exists(self.envs_root_path):
             os.makedirs(self.envs_root_path)
@@ -45,21 +46,22 @@ class Anagpt:
         if not os.path.exists(self.files_root_path):
             os.makedirs(self.files_root_path)
 
+        self.version = 'AnaGPT ' + version
         self.base_env_name = 'base'
         self.history = []
         self.history_name = None
         self.chat_history_list = []
         self.cur_env_name = self.base_env_name
         self.system_prompt = None
-        self.base_model = chatGPT.LLM_MODEL
+        self.chat_model = GPT()
         self.cancel_output = False
 
-        self.load_last_env_name_content()
+        self.load_last_model_env_name_content()
         self.load_chat_history_list()
         self.commands, self.keyboards = self.get_all_command_keyboards()
         self.register_fun()
 
-        self.show_welcome_message()
+        self.clear_screen_and_history()
 
     def get_all_command_keyboards(self):
         def show_env_list():
@@ -101,9 +103,7 @@ class Anagpt:
             print('')
 
         def clear_screen_and_history():
-            run('cls', shell=True, encoding="utf-8")
-            self.clear_history()
-            self.show_welcome_message()
+            self.clear_screen_and_history()
 
         def show_help_content():
             content = self.get_function_body(__file__, 'get_all_command_keyboards')
@@ -207,9 +207,9 @@ class Anagpt:
             print('')
 
         def recover_chat_history():
-            print('Which history you want to recover:')
+            print('Which history do you want to recover:')
             self.show_chat_history_list()
-
+            select_history_index = 0
             while True:
                 try:
                     select_history_index = int(input('Input the index:')) - 1
@@ -291,7 +291,7 @@ class Anagpt:
             files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))
                      and not f.startswith('.') and not f.endswith('~')]
 
-            print('Which pkg you want to edit:\n')
+            print('Which pkg do you want to edit:\n')
             self.show_cur_env_pkg_list()
             print('')
 
@@ -317,6 +317,29 @@ class Anagpt:
             else:
                 print('{} system is not supported!'.format(platform.system()))
             print('')
+
+        def show_chat_model_list():
+            self.show_chat_model_list()
+            print('')
+
+        def change_chat_model():
+            print('Which chat model do you want to change:\n')
+            show_chat_model_list()
+
+            model_list_dic = gpt.MODEL_LIST
+
+            select_index = 0
+            while True:
+                try:
+                    select_index = int(input('Input the index:')) - 1
+                except Exception as e:
+                    print(e)
+                    continue
+                if select_index < len(model_list_dic) and select_index >= 0:
+                    break
+            model_name = list(model_list_dic.keys())[select_index]
+            self.change_chat_model(model_name)
+            self.clear_screen_and_history()
 
         commands = {
 
@@ -358,6 +381,10 @@ class Anagpt:
 
             # create shortcut
             'gpt create shortcut': lambda cmd: create_shortcut(),
+
+            # handle model
+            'gpt model change': lambda cmd: change_chat_model(),
+            'gpt model list': lambda cmd: show_chat_model_list(),
         }
 
         def on_cancel_output_flow(key):
@@ -424,7 +451,7 @@ class Anagpt:
             self.chat_flow(message=message,
                            history=self.history,
                            system_prompt=self.system_prompt,
-                           temperature=0.8)
+                           temperature=0.7)
 
             # generate history name
             if not self.history_name:
@@ -438,7 +465,7 @@ class Anagpt:
     def chat_flow(self, message, history, system_prompt, temperature, is_print=True):
         last_index = 0
         chatbot = []
-        for chatbot, history, statusDisplay in pd(message, chatbot=chatbot, history=history,
+        for chatbot, history, statusDisplay in self.chat_model.predict(message, chatbot=chatbot, history=history,
                                                        system_prompt=system_prompt, temperature=temperature):
             if self.cancel_output:
                 self.cancel_output = False
@@ -455,20 +482,20 @@ class Anagpt:
         return chatbot[0][1]
 
     def set_history_name(self):
-        message = ''.join(self.history[:2])
+        # message = ''.join(self.history[:2])
+        #
+        # prompt = 'This is the first question the user asked chatgpt: "{}", please generate a title for it. ' \
+        #          'If there is no suitable title, directly generate "User Question Consultation"'
+        #
+        # message = prompt.format(message)
+        #
+        # history_name = self.chat_flow(message=message,
+        #                       history=[],
+        #                       system_prompt='',
+        #                       temperature=1,
+        #                       is_print=False)
 
-        prompt = 'This is the first question the user asked chatgpt: "{}", please generate a title for it. ' \
-                 'If there is no suitable title, directly generate "User Question Consultation"'
-
-        message = prompt.format(message)
-
-        history_name = self.chat_flow(message=message,
-                              history=[],
-                              system_prompt='',
-                              temperature=1,
-                              is_print=False)
-
-        # history_name = self.history[0]
+        history_name = self.history[0][:15] # 15 words is the longest file name has
         history_name = self.convert_to_legal_file_name(history_name)
         self.history_name = history_name
 
@@ -501,7 +528,7 @@ class Anagpt:
         for key in self.keyboards:
             keyboard.on_press(self.keyboards[key])
 
-        atexit.register(self.save_last_env_name_content)
+        atexit.register(self.save_last_model_env_name_content)
         atexit.register(self.save_chat_history)
 
         system_type = platform.system()
@@ -509,13 +536,13 @@ class Anagpt:
         if system_type == 'Windows':
             def handler(event):
                 if event == win32con.CTRL_CLOSE_EVENT:
-                    self.save_last_env_name_content()
+                    self.save_last_model_env_name_content()
                     self.save_chat_history()
 
             win32api.SetConsoleCtrlHandler(handler, True)
         elif system_type == 'Linux':
             def signal_handler(signum, frame):
-                self.save_last_env_name_content()
+                self.save_last_model_env_name_content()
                 self.save_chat_history()
                 sys.exit(signum)
 
@@ -593,7 +620,7 @@ class Anagpt:
         print(self.get_color_changed_text(text))
 
     def show_version(self, change_color=False):
-        text = f'{VERSION}, Model: {self.base_model}'
+        text = f'{self.version}, Model: {self.chat_model.name}'
         if change_color:
             text = self.get_color_changed_text(text)
         print(text)
@@ -606,6 +633,11 @@ class Anagpt:
         print('')
         print(self.get_color_changed_text(' Try "gpt help".'))
         print('')
+
+    def clear_screen_and_history(self):
+        run('cls', shell=True, encoding="utf-8")
+        self.clear_history()
+        self.show_welcome_message()
 
     def get_color_changed_text(self, text, color='green'):
         if color == 'green':
@@ -845,7 +877,7 @@ class Anagpt:
             print('Load form {} successfully! Add {} new pkgs. Update {} pkgs.'.format(url, new_count, update_count))
 
         # proxies setting
-        proxies = chatGPT.proxies
+        proxies = get_conf('proxies')[0]
 
         # pkg url1
         url = "https://raw.githubusercontent.com/f/awesome-chatgpt-prompts/main/prompts.csv"
@@ -888,23 +920,24 @@ class Anagpt:
             for pkg_name in files:
                 print(str(files.index(pkg_name) + 1) + '.', pkg_name)
 
-    def save_last_env_name_content(self):
+    def save_last_model_env_name_content(self):
 
         try:
             content = {}
+            content['chat_model'] = self.chat_model.name
             content['env_name'] = self.cur_env_name
             content['env_content'] = self.system_prompt
 
-            with open(os.path.join(self.sys_root_path, 'last_env_name_content'), 'w', encoding="utf-8") as f:
+            with open(os.path.join(self.sys_root_path, 'last_information'), 'w', encoding="utf-8") as f:
                 f.write(str(content))
             f.close()
 
         except Exception as e:
             print(e)
 
-    def load_last_env_name_content(self):
+    def load_last_model_env_name_content(self):
         try:
-            file_name = os.path.join(self.sys_root_path, 'last_env_name_content')
+            file_name = os.path.join(self.sys_root_path, 'last_information')
             if not os.path.exists(file_name):
                 return
 
@@ -912,6 +945,7 @@ class Anagpt:
             content = f.read()
             f.close()
             content = ast.literal_eval(content)
+            self.change_chat_model(content['chat_model'])
             self.activate_env(content['env_name'])
 
         except Exception as e:
@@ -989,3 +1023,26 @@ class Anagpt:
             shortcut.save()
         except Exception as e:
             print(e)
+
+    def show_chat_model_list(self):
+        model_list_dic = gpt.MODEL_LIST
+        for i, key in enumerate(model_list_dic):
+            print(str(i + 1) + '.' + key)
+
+    def change_chat_model(self, model_name):
+        try:
+            model_list_dic = gpt.MODEL_LIST
+            if model_name not in model_list_dic:
+                print(model_name, 'does not exist.')
+                return
+
+            # free memory
+            del self.chat_model
+            gc.collect()
+
+            self.chat_model = GPT(model_name)
+        except Exception as e:
+            print(e)
+
+
+

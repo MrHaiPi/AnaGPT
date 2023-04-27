@@ -34,7 +34,7 @@
 - 🤲 **更稳定** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; API接口避免网页 F5 / minute 
 - 🚗 **更便捷** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 命令行查看并安装专业的prompt
 - 🎨 **更多样** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 多个prompt自定义组合且支持简单语句调用
-
+- 🤖 **多模型**&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 支持多个离线模型
 
 <h2 id="Example"> 
 🌰 Example
@@ -44,6 +44,12 @@
 
 
 ![AnaGPT](./example/AnaGPTvsChatGPT.png)
+
+
+## 🤖 Model List
+&emsp;&emsp;  请注意，离线版的模型运行会比较缓慢。 离线版的模型请在此处下载[Click here](https://huggingface.co/MrHaiPi/AnaGPT). 将下载的models文件夹的内容移动到你本地项目的对应位置即可。
+
+![Models](./example/model_list.jpg)
 
 
 ## 👋🏼 Intro
@@ -112,7 +118,7 @@ pip install -r requirements.txt
 
 6. 配置OpenAI key与端口:
 ```
-# 打开config_private.py，配置API_KEY的值，若没有config_private.py文件，请通过拷贝config.py进行创建
+# 打开models/chat_gpt/config_private.py，配置API_KEY的值，若没有config_private.py文件，请通过拷贝config.py进行创建
 
 # 若需要使用网络代理，设置
 
@@ -172,6 +178,10 @@ gpt create shortcut
 
 10. 为了更加流畅的使用AnaGPT，建议阅读完**Special Instructions**小节。
 
+
+
+11. 使用```gpt model list```查看支持的模型，使用```gpt model change```命令切换模型
+
 <h2 id="RoadMap"> 
 🎉 RoadMap
 </h2>
@@ -186,18 +196,19 @@ gpt create shortcut
 - ✅ 基于给定的 text，docx，pdf聊天
 - ✅ 接入中英文两个最全的prompt内容
 - ✅ prompt再编辑
-- 🏃 历史问题修改再回答
-- 🏃 解析指定文件夹下的所有代码文件
-- 🏃 给指定的代码文件添加注释
+
 
 ### version 2.0
+- ✅ 接入各类小语言模型，实现离线版AnaGPT
 - 🏃 融合原生终端命令
 - 🏃 自我强化聊天历史，更符合用户习惯
 - 🏃 使用搜索引擎API接入网络 
 - 🏃 基于python调用网页接入网络，避免搜索引擎API二次收费
 - 🏃 基于python调用网页版chatGPT, 避免token消耗
-- 🏃 接入各类小语言模型，实现离线版AnaGPT
 - 🏃 赋予AnaGPT文件IO权力，实现自我编辑
+- 🏃 历史问题修改再回答
+- 🏃 解析指定文件夹下的所有代码文件
+- 🏃 给指定的代码文件添加注释
 - 🏃 ...
 
 
@@ -211,35 +222,8 @@ gpt create shortcut
 
 你可以使用如下命令操作AnaGPT:
 
-```
-This is a Python function that defines a set of commands and keyboards that users can enter or push in a GPT chatbot environment.
+![Models](./example/gpt_help.jpg)
 
-The `commands` dictionary contains the commands that the user can enter and their corresponding functions. The available commands are:
-
-- `gpt -version`: show the version of the GPT chatbot.
-- `gpt env list`: display a list of available environments.
-- `gpt env list -des`: display a detailed list of available environments.
-- `gpt create -n *`: create a new environment with the given name. The `*` should be replaced with the desired name of the environment. An optional `-clone` flag can be used to clone an existing environment.
-- `gpt activate *`: activate the environment with the given name. The `*` should be replaced with the name of the environment to activate.
-- `gpt deactivate`: deactivate the current environment.
-- `gpt remove -n *`: remove the environment with the given name. The `*` should be replaced with the name of the environment to remove.
-- `gpt help`: display a general help message.
-- `gpt help -n *`: display a help message for the command with the given name. The `*` should be replaced with the name of the command to get help for.
-- `gpt install -n *`: install a new package with the given name. The `*` should be replaced with the name of the package to install. An optional `-c` flag can be used to specify the package content directly on the command line.
-- `gpt uninstall -n *`: uninstall the package with the given name. The `*` should be replaced with the name of the package to uninstall.
-- `gpt pkgs update`: update the list of locally available packages.
-- `gpt pkgs list`: display a list of locally available packages.
-- `gpt list`: display a list of packages in the current environment.
-- `gpt vim`: open the Vim editor to edit the content of a package in the current environment.
-- `gpt clear`: clear the screen and chat history.
-- `gpt history list`: display a list of available chat history files.
-- `gpt history recover`: recover a previous chat history file.
-- `gpt history remove -n *`: remove the chat history file with the given name. The `*` should be replaced with the name of the chat history file to remove.
-- `gpt history remove -all`: remove all chat history files.
-- `gpt chat *`: start a chat based on a set of files. The `*` should be replaced with the path to the files that should be used for chat-based conversation.
-
-The `keyboards` dictionary contains functions that are called when certain keys are pressed. At the moment, there is only one function that is called when `ctrl+shift` is pressed. This function cancels the current output flow.
-```
 
 上述内容可在运行AnaGPT后通过输入如下命令来获得:
 ```

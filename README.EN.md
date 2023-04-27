@@ -33,6 +33,7 @@
 - 🤲 **More Stable** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; API interface to prevent webpage F5/refresh 
 - 🚗 **More Convenient** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;Command line to view and install professional prompt
 - 🎨 **More diverse** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Multiple custom combinations of prompts and support for simple statement calls
+- 🤖 **More Models** &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Supports multiple offline models
 
 <h2 id="Example"> 
 🌰 Example
@@ -42,6 +43,12 @@
 
 
 ![AnaGPT](./example/AnaGPTvsChatGPT.png)
+
+
+## 🤖 Model List
+&emsp;&emsp;  Please note that the offline version of the model will run relatively slowly. Please download the offline version of the model here [Click here](https://huggingface.co/MrHaiPi/AnaGPT). Move the contents of the downloaded models folder to the corresponding location of your local project.
+![Models](./example/model_list.jpg)
+
 
 
 ## 👋🏼 Intro
@@ -109,7 +116,7 @@ pip install -r requirements.txt
 
 6. Configure the OpenAI key and port:
 ```
-# Open config_private.py and configure the value of API_KEY. If there is no config_private.py file, create one by copying config.py.
+# Open models/chat_gpt/config_private.py and configure the value of API_KEY. If there is no config_private.py file, create one by copying config.py.
 
 # If you need to use a network proxy, set:
 
@@ -173,6 +180,9 @@ gpt create shortcut
 
 10. In order to use AnaGPT more smoothly, it is recommended to read the * * Special Instructions * * section.
 
+
+11. Use the ```gpt model list``` command to view supported models and switch models using the ```gpt model change``` command.
+
 <h2 id="RoadMap"> 
 🎉 RoadMap
 </h2>
@@ -186,18 +196,19 @@ gpt create shortcut
 -  ✅  Chat based on given text, docx, pdf
 -  ✅  Access the two most comprehensive prompt content in both Chinese and English
 -  ✅  Prompt revision
--  🏃  Revise historical questions before answering them
--  🏃  Resolve all code files in the specified folder
--  🏃  Add comments to the specified code file
+
 
 ### version 2.0
+-  ✅  Accessing various small language models to achieve offline AnaGPT
 -  🏃  Integrate native terminal commands
 -  🏃  Self reinforcing chat history, more in line with user habits
 -  🏃  Using search engine APIs to access the network
 -  🏃  Calling web pages to access the network based on Python to avoid secondary fees for search engine APIs
 -  🏃  Calling web version chatGPT based on Python to avoid token consumption
--  🏃  Accessing various small language models to achieve offline AnaGPT
 -  🏃  Granting AnaGPT file IO power for self editing
+-  🏃  Revise historical questions before answering them
+-  🏃  Resolve all code files in the specified folder
+-  🏃  Add comments to the specified code file
 -  🏃 ...
 
 
@@ -210,35 +221,8 @@ If you have any suggestions or opinions, please create an Issue on GitHub or sen
 </h2>
 
 You can use the following command to operate AnaGPT:
-```
-This is a Python function that defines a set of commands and keyboards that users can enter or push in a GPT chatbot environment.
 
-The `commands` dictionary contains the commands that the user can enter and their corresponding functions. The available commands are:
-
-- `gpt -version`: show the version of the GPT chatbot.
-- `gpt env list`: display a list of available environments.
-- `gpt env list -des`: display a detailed list of available environments.
-- `gpt create -n *`: create a new environment with the given name. The `*` should be replaced with the desired name of the environment. An optional `-clone` flag can be used to clone an existing environment.
-- `gpt activate *`: activate the environment with the given name. The `*` should be replaced with the name of the environment to activate.
-- `gpt deactivate`: deactivate the current environment.
-- `gpt remove -n *`: remove the environment with the given name. The `*` should be replaced with the name of the environment to remove.
-- `gpt help`: display a general help message.
-- `gpt help -n *`: display a help message for the command with the given name. The `*` should be replaced with the name of the command to get help for.
-- `gpt install -n *`: install a new package with the given name. The `*` should be replaced with the name of the package to install. An optional `-c` flag can be used to specify the package content directly on the command line.
-- `gpt uninstall -n *`: uninstall the package with the given name. The `*` should be replaced with the name of the package to uninstall.
-- `gpt pkgs update`: update the list of locally available packages.
-- `gpt pkgs list`: display a list of locally available packages.
-- `gpt list`: display a list of packages in the current environment.
-- `gpt vim`: open the Vim editor to edit the content of a package in the current environment.
-- `gpt clear`: clear the screen and chat history.
-- `gpt history list`: display a list of available chat history files.
-- `gpt history recover`: recover a previous chat history file.
-- `gpt history remove -n *`: remove the chat history file with the given name. The `*` should be replaced with the name of the chat history file to remove.
-- `gpt history remove -all`: remove all chat history files.
-- `gpt chat *`: start a chat based on a set of files. The `*` should be replaced with the path to the files that should be used for chat-based conversation.
-
-The `keyboards` dictionary contains functions that are called when certain keys are pressed. At the moment, there is only one function that is called when `ctrl+shift` is pressed. This function cancels the current output flow.
-```
+![Models](./example/gpt_help.jpg)
 
 The above content can be obtained by entering the following command after running AnaGPT:
 ```
