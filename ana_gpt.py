@@ -509,7 +509,8 @@ class Anagpt:
         cursor_thread.start()
 
         prompt = \
-            "Given below information, Please use the least words to answer my question: '{}' \n" \
+            "Given below information, please use the least words to answer my question: '{}'. " \
+            "Please note that you can only answer my question based on the following content. \n" \
             "---------------------\n" \
             "{}\n" \
             "---------------------\n"
