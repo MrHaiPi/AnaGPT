@@ -509,35 +509,38 @@ class Anagpt:
         cursor_thread.start()
 
         prompt = \
-            "Given below information, please use the least words to answer my question: '{}'. " \
-            "Please note that you can only answer my question based on the following content. \n" \
+            "Given below information, please use the least words to answer my question ,'{}', in one paragraph. " \
+            "Please note that you can only answer my question based on the following content. {} \n" \
             "---------------------\n" \
             "{}\n" \
             "---------------------\n"
 
-        ans = []
+        answer_part = []
         for content in self.chat_files_content:
-            first_query = prompt.format(message, content)
+            first_query = prompt.format(message, '', content)
 
-            ans.append(self.chat_flow(message=first_query,
-                                      history=[],
-                                      system_prompt='',
-                                      temperature=temperature,
-                                      is_print=False))
+            answer_part.append(self.chat_flow(message=first_query,
+                                              history=[],
+                                              system_prompt='',
+                                              temperature=temperature,
+                                              is_print=False))
+            break
 
         files_analyzing.stop()
         cursor_thread.join()
         print('')
 
-        ans = ''.join(ans)
-        second_query = 'Please logically organize the below content and summarize it into a paragraph: \n'
-        second_query = second_query + ans
-        ans = self.chat_flow(message=second_query,
-                             history=history,
-                             system_prompt=system_prompt,
-                             temperature=temperature,
-                             is_print=is_print)
-        return ans
+        answer_all = ''.join(answer_part)
+        # second_query = 'Please logically organize and summarize the below content into a paragraph: \n'
+        # second_query = second_query + ans
+        prompt_deep = 'Please note that you need to make your answer academically logical.'
+        second_query = prompt.format(message, prompt_deep, answer_all)
+        results = self.chat_flow(message=second_query,
+                                 history=history,
+                                 system_prompt=system_prompt,
+                                 temperature=temperature,
+                                 is_print=is_print)
+        return results
 
     def change_chat_type(self, chat_type, files_path=None):
         if chat_type in self.chat_all_types:
@@ -671,15 +674,15 @@ class Anagpt:
                 'its own importance, please ignore it.'
                 'When you are confused about which prompt/instruction to answer based on, you need to ask users, '
                 'and in this case, you must list all the prompts/instructions options in short words for users to '
-                'choose from.] ')
+                'choose from.]')
 
         for i, mess in enumerate(env_content):
             prompt.append(str(env_content.index(mess) + 2) + '.[' + pkg_names[i].replace('_', ' ') + ':' + mess +
-                          ' (' + 'If there is a specific request or similar content in this prompt/instruction, please ignore it.' + ') ' + ']  ')
+                          ' (If there is a specific request in this prompt/instruction, please ignore it).' + ']')
 
-        prompt = ''.join(prompt)
+        prompt = ' '.join(prompt)
 
-        prompt = "Your subsequent responses should all be based on the following prompts/instructions:'{}'.".format(
+        prompt = "Your subsequent responses should all be based on the following prompts/instructions: '{}'.".format(
             prompt)
 
         self.system_prompt = prompt
@@ -1040,8 +1043,8 @@ class Anagpt:
     def save_chat_history(self):
 
         try:
-            if not self.history:
-                return
+            while not self.history:
+                time.sleep(1)
 
             file_name = self.cur_env_name
             if self.history_name:
@@ -1052,8 +1055,11 @@ class Anagpt:
             content['system_prompt'] = self.system_prompt
             content['history'] = self.history
             with open(os.path.join(self.history_root_path, file_name), 'w', encoding="utf-8") as f:
-                f.write(str(content))
+                json_str = json.dumps(content, indent=0, ensure_ascii=False)
+                f.write(json_str)
+                f.write('\n')
             f.close()
+
         except Exception as e:
             # Possible error caused by name issue, so reset the name
             self.history_name = None
