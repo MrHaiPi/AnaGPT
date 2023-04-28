@@ -53,9 +53,8 @@ class GPT:
                            use_mlock=True)
 
     def predict(self, prompt, system_prompt='', temperature=0.8, stream=True, chatbot=[], history=[]):
-        # system_prompt = "You are a ChatBot like 'ChatGPT' right now, you need help people finish their requirements. " \
-        #                 "Below is an instruction/prompt that describes a task. Write a response that approproately " \
-        #                 "completes the request. \n" + system_prompt
+        system_prompt = "Below is an instruction/prompt that describes a task. Write a response that appropriately " \
+                        "completes the request. \n" + system_prompt
 
         system_prompt += '\n'
 

@@ -507,17 +507,14 @@ class Anagpt:
         cursor_thread.start()
 
         prompt = \
-            "We have provided context information below: \n" \
+            "Given below information, Please use the least words to answer my question: '{}' \n" \
             "---------------------\n" \
             "{}\n" \
-            "---------------------\n" \
-            "Given this information, Please answer my question in the same language that I used to ask you with as few " \
-            "words as possible.\n" \
-            "Please answer the question: {}\n"
-
+            "---------------------\n"
+        # what is the article talking about mainly?
         ans = []
         for content in self.chat_files_content:
-            first_query = prompt.format(content, message)
+            first_query = prompt.format(message, content)
 
             ans.append(self.chat_flow(message=first_query,
                                       history=[],
@@ -529,7 +526,7 @@ class Anagpt:
         cursor_thread.join()
 
         ans = ''.join(ans)
-        second_query = 'Please summarize and organize the logic of the above content in a more academic tone.'
+        second_query = 'Please logically organize the above content and summarize it into a paragraph.'
         second_query = second_query + '\n' + ans
         self.chat_flow(message=second_query,
                        history=history,
