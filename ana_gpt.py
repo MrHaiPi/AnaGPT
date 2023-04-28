@@ -852,7 +852,7 @@ class Anagpt:
         # 移除重复的连字符
         text = re.sub(r'-+', '-', text)
         # 去掉斜杠和反斜杠
-        text = text.replace('/', '_').replace('\\', '').replace(':', '').replace('：', '')
+        text = text.replace('/', '_').replace('\\', '').replace(':', '').replace('：', '').replace(' ', '_')
         return text
 
     def update_local_pkgs(self):
