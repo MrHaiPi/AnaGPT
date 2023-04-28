@@ -511,16 +511,17 @@ class Anagpt:
             "---------------------\n" \
             "{}\n" \
             "---------------------\n" \
-            "Given this information, Please answer my question in the same language that I used to ask you.\n" \
+            "Given this information, Please answer my question in the same language that I used to ask you with as few " \
+            "words as possible.\n" \
             "Please answer the question: {}\n"
 
         ans = []
         for content in self.chat_files_content:
-            message = prompt.format(content, message)
+            first_query = prompt.format(content, message)
 
-            ans.append(self.chat_flow(message=message,
-                                      history=history,
-                                      system_prompt=system_prompt,
+            ans.append(self.chat_flow(message=first_query,
+                                      history=[],
+                                      system_prompt='',
                                       temperature=temperature,
                                       is_print=False))
 
@@ -528,13 +529,15 @@ class Anagpt:
         cursor_thread.join()
 
         ans = ''.join(ans)
-        message = prompt.format(ans, message)
+        second_query = 'Please summarize and organize the logic of the above content in a more academic tone ' \
+                       'as few words as possible.'
+        second_query = second_query + '\n' + ans
+        ans = self.chat_flow(message=second_query,
+                             history=history,
+                             system_prompt=system_prompt,
+                             temperature=temperature,
+                             is_print=is_print)
 
-        self.chat_flow(message=message,
-                       history=history,
-                       system_prompt=system_prompt,
-                       temperature=0.8,
-                       is_print=is_print)
 
     def change_chat_type(self, chat_type, files_path=None):
         if chat_type in self.chat_all_types:

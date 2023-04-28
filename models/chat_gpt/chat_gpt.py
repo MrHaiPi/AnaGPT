@@ -1,9 +1,10 @@
 import importlib
 import json
 import logging
+import time
 import traceback
-
 import requests
+from models.chat_gpt.toolbox import regular_txt_to_markdown
 
 # config_private.py放自己的秘密如API和代理网址
 # 读取时首先看是否存在私密的config_private配置文件（不受git管控），如果有，则覆盖原config文件
@@ -19,6 +20,7 @@ timeout_bot_msg = '[Local Message] Request timeout. Network error. Please check 
 class chat_gpt:
     def __init__(self, name):
         self.name = name
+        self.last_predict_time = 0
 
     def get_full_error(self, chunk, stream_response):
         """
@@ -41,6 +43,11 @@ class chat_gpt:
             history 是之前的对话列表（注意无论是inputs还是history，内容太长了都会触发token数量溢出的错误）
             chatbot 为WebUI中显示的对话列表，修改它，然后yeild出去，可以直接修改对话界面内容
         """
+
+        # 一分钟只能调用3次API, 平均每次20秒
+        while time.time() - self.last_predict_time <= 22:
+            time.sleep(1)
+        self.last_predict_time = time.time()
 
         if stream:
             raw_input = inputs
@@ -103,7 +110,6 @@ class chat_gpt:
                         elif "Incorrect API key" in error_msg:
                             chatbot[-1] = (chatbot[-1][0], "[Local Message] Incorrect API key provided.")
                         else:
-                            from toolbox import regular_txt_to_markdown
                             tb_str = regular_txt_to_markdown(traceback.format_exc())
                             chatbot[-1] = (chatbot[-1][0], f"[Local Message] Json Error \n\n {tb_str} \n\n {regular_txt_to_markdown(chunk.decode()[4:])}")
                         yield chatbot, history, "Json解析不合常规" + error_msg

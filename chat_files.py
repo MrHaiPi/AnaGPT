@@ -4,7 +4,7 @@ import PyPDF2
 import docx
 
 
-def get_chat_files_content(folder_path, segment_length=3500):
+def get_chat_files_content(folder_path, segment_length=3000):
     try:
 
         # 存储所有文件的文本内容
