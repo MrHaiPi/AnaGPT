@@ -150,12 +150,11 @@ class Anagpt:
                          and not f.startswith('.') and not f.endswith('~')]
                 if pkg_name not in files:
                     print('not find "{}" pkg from {}'.format(pkg_name, dir_path))
-                    return
-
-                f = open(os.path.join(dir_path, pkg_name), "r", encoding="utf-8")
-                pkg_content = f.read()
-                f.close()
-                self.create_new_pkg(pkg_name, pkg_content)
+                else:
+                    f = open(os.path.join(dir_path, pkg_name), "r", encoding="utf-8")
+                    pkg_content = f.read()
+                    f.close()
+                    self.create_new_pkg(pkg_name, pkg_content)
 
             # customize the content of pkgs
             elif '-c' in parameters:
