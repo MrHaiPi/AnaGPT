@@ -511,7 +511,7 @@ class Anagpt:
             "---------------------\n" \
             "{}\n" \
             "---------------------\n"
-        # what is the article talking about mainly?
+
         ans = []
         for content in self.chat_files_content:
             first_query = prompt.format(message, content)
