@@ -529,8 +529,8 @@ class Anagpt:
         cursor_thread.join()
 
         ans = ''.join(ans)
-        second_query = 'Please logically organize the above content and summarize it into a paragraph.'
-        second_query = second_query + '\n' + ans
+        second_query = 'Please logically organize the below content and summarize it into a paragraph: \n'
+        second_query = second_query + ans
         ans = self.chat_flow(message=second_query,
                              history=history,
                              system_prompt=system_prompt,
