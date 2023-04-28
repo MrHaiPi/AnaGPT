@@ -60,7 +60,7 @@ class Anagpt:
         self.chat_model = GPT()
         self.cancel_output = False
 
-        self.chat_all_types = {'normal':'', 'files':'📑', 'online':'🌐'}
+        self.chat_all_types = {'normal': '', 'files': '📑', 'online': '🌐'}
         self.chat_type = list(self.chat_all_types.keys())[0]
         self.chat_files_content = None
 
@@ -146,7 +146,8 @@ class Anagpt:
 
             parameter = cmd.split(' ')[3:]
 
-            prompt = "\n Please provide instructions on how to use the {} command based on the above content.".format(parameter)
+            prompt = "\n Please provide instructions on how to use the {} command based on the above content.".format(
+                parameter)
             message = '"' + help_content + '"' + prompt
 
             self.chat_flow(message=message,
@@ -299,7 +300,8 @@ class Anagpt:
             select_pkg_name = files[select_pkg_index]
             state = self.run_cmd('vim ' + os.path.join(dir_path, select_pkg_name))
             if state.returncode != 0:
-                print('You should install the vim command, check here: https://github.com/vim/vim-win32-installer/releases')
+                print(
+                    'You should install the vim command, check here: https://github.com/vim/vim-win32-installer/releases')
             print('')
 
         def create_shortcut():
@@ -452,12 +454,11 @@ class Anagpt:
                                temperature=0.7)
             elif self.chat_type == list(self.chat_all_types.keys())[1]:
                 self.chat_based_given_files(message=message,
-                               history=self.history,
-                               system_prompt=self.system_prompt,
-                               temperature=0.7)
+                                            history=self.history,
+                                            system_prompt=self.system_prompt,
+                                            temperature=0.7)
             else:
                 print('chat type ' + self.chat_type + ' is not supported!')
-
 
             # generate history name
             if not self.history_name:
@@ -480,7 +481,8 @@ class Anagpt:
         last_index = 0
         chatbot = []
         for chatbot, history, statusDisplay in self.chat_model.predict(message, chatbot=chatbot, history=history,
-                                                       system_prompt=system_prompt, temperature=temperature):
+                                                                       system_prompt=system_prompt,
+                                                                       temperature=temperature):
             if is_print:
                 model_thinking.stop()
                 cursor_thread.join()
@@ -528,11 +530,12 @@ class Anagpt:
         ans = ''.join(ans)
         second_query = 'Please logically organize the above content and summarize it into a paragraph.'
         second_query = second_query + '\n' + ans
-        self.chat_flow(message=second_query,
-                       history=history,
-                       system_prompt=system_prompt,
-                       temperature=temperature,
-                       is_print=is_print)
+        ans = self.chat_flow(message=second_query,
+                             history=history,
+                             system_prompt=system_prompt,
+                             temperature=temperature,
+                             is_print=is_print)
+        return ans
 
     def change_chat_type(self, chat_type, files_path=None):
         if chat_type in self.chat_all_types:
@@ -566,7 +569,7 @@ class Anagpt:
         #                       temperature=1,
         #                       is_print=False)
 
-        history_name = self.history[0][:15] # 15 words is the longest file name has
+        history_name = self.history[0][:15]  # 15 words is the longest file name has
         history_name = self.convert_to_legal_file_name(history_name)
         self.history_name = history_name
 
@@ -657,15 +660,16 @@ class Anagpt:
         # prompt = ''.join(prompt)
 
         if env_content:
-            prompt.append('1.[Please note that only the content boxed in “[]” represents the prompts/instructions I gave you. '
-                          'If there are multiple prompts/instructions, you need to integrate all prompts/instructions to answer my question.'
-                          # 'you need to choose the most relevant prompts/instructions based on my question to answer by yourself.'
-                          'Do not reply the prompt/instruction you have chosen. Do not explain why you have chosen it.'
-                          'The importance of all prompts/instructions are the same. If there is a(n) prompt/instruction emphasizes something of '
-                          'its own importance, please ignore it.'
-                          'When you are confused about which prompt/instruction to answer based on, you need to ask users, '
-                          'and in this case, you must list all the prompts/instructions options in short words for users to '
-                          'choose from.] ')
+            prompt.append(
+                '1.[Please note that only the content boxed in “[]” represents the prompts/instructions I gave you. '
+                'If there are multiple prompts/instructions, you need to integrate all prompts/instructions to answer my question.'
+                # 'you need to choose the most relevant prompts/instructions based on my question to answer by yourself.'
+                'Do not reply the prompt/instruction you have chosen. Do not explain why you have chosen it.'
+                'The importance of all prompts/instructions are the same. If there is a(n) prompt/instruction emphasizes something of '
+                'its own importance, please ignore it.'
+                'When you are confused about which prompt/instruction to answer based on, you need to ask users, '
+                'and in this case, you must list all the prompts/instructions options in short words for users to '
+                'choose from.] ')
 
         for i, mess in enumerate(env_content):
             prompt.append(str(env_content.index(mess) + 2) + '.[' + pkg_names[i].replace('_', ' ') + ':' + mess +
@@ -673,7 +677,8 @@ class Anagpt:
 
         prompt = ''.join(prompt)
 
-        prompt = "Your subsequent responses should all be based on the following prompts/instructions:'{}'.".format(prompt)
+        prompt = "Your subsequent responses should all be based on the following prompts/instructions:'{}'.".format(
+            prompt)
 
         self.system_prompt = prompt
         self.change_cur_env(env_name)
@@ -762,7 +767,7 @@ class Anagpt:
         message = []
         dir_path = os.path.join(self.envs_root_path, env_name)
         files = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))
-                 and not f.startswith('.') and not f.endswith('~')] # remove the invisible files
+                 and not f.startswith('.') and not f.endswith('~')]  # remove the invisible files
         for file in files:
             f = open(os.path.join(dir_path, file), "r", encoding="utf-8")
             message.append(f.read())
@@ -778,8 +783,8 @@ class Anagpt:
             f = open(os.path.join(dir_path, file), "r", encoding="utf-8")
             print(
                 self.get_color_changed_text(
-                str(files.index(file) + 1) + '.' + file
-            ))
+                    str(files.index(file) + 1) + '.' + file
+                ))
             print('  ', f.read())
             if files.index(file) < len(files) - 1:
                 print('')
@@ -921,7 +926,8 @@ class Anagpt:
                     else:
                         exists_file_content = open(filename, "r", encoding="utf-8").read()
                         if exists_file_content != content:
-                            print(self.get_color_changed_text('Finding pkg with the same name but different content: {}'.format(filename_nopath)))
+                            print(self.get_color_changed_text(
+                                'Finding pkg with the same name but different content: {}'.format(filename_nopath)))
                             print('')
                             print(self.get_color_changed_text('Content of old pkg:'))
                             print(exists_file_content)
@@ -931,7 +937,8 @@ class Anagpt:
                             print('')
 
                             while True:
-                                confirm = input(self.get_color_changed_text('Rewrite(r) it or Save(s) as another? r/s:'))
+                                confirm = input(
+                                    self.get_color_changed_text('Rewrite(r) it or Save(s) as another? r/s:'))
                                 if confirm == 'r' or confirm == 'R':
                                     update_count += 1
                                     break
@@ -1077,7 +1084,7 @@ class Anagpt:
     def load_chat_history_list(self):
         dir_path = self.history_root_path
         self.chat_history_list = [f for f in os.listdir(dir_path) if os.path.isfile(os.path.join(dir_path, f))
-                                and not f.startswith('.') and not f.endswith('~')]
+                                  and not f.startswith('.') and not f.endswith('~')]
 
     def create_shortcut(self):
 
@@ -1120,6 +1127,3 @@ class Anagpt:
             self.chat_model = GPT(model_name)
         except Exception as e:
             print(e)
-
-
-
