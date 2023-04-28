@@ -527,6 +527,7 @@ class Anagpt:
 
         files_analyzing.stop()
         cursor_thread.join()
+        print('')
 
         ans = ''.join(ans)
         second_query = 'Please logically organize the below content and summarize it into a paragraph: \n'
