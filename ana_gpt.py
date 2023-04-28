@@ -20,6 +20,7 @@ import win32api
 import win32con
 from win32com import client
 
+from animation import Thinking, FilesLoading, FilesAnalyzing
 from chat_files import get_chat_files_content
 from dataio import copy_dir
 import gpt
@@ -55,6 +56,10 @@ class Anagpt:
         self.system_prompt = None
         self.chat_model = GPT()
         self.cancel_output = False
+
+        self.chat_all_types = {'normal':'', 'files':'📑', 'online':'🌐'}
+        self.chat_type = list(self.chat_all_types.keys())[0]
+        self.chat_files_content = None
 
         self.load_last_model_env_name_content()
         self.load_chat_history_list()
@@ -216,7 +221,8 @@ class Anagpt:
                 except Exception as e:
                     print(e)
                     continue
-                if select_history_index < len(self.chat_history_list) and select_history_index >= 0:
+
+                if len(self.chat_history_list) > select_history_index >= 0:
                     break
 
             self.load_chat_history(self.chat_history_list[select_history_index])
@@ -245,46 +251,17 @@ class Anagpt:
 
         def chat_based_given_files(cmd):
             parameters = cmd.split(' ')
+            self.change_chat_type(parameters[2], parameters[4])
+            print('')
 
-            if '-p' not in parameters:
-                message = ''.join(parameters[2:])
-                files_path = self.files_root_path
-                files_content = get_chat_files_content(files_path)
-            elif '-p' in parameters:
-                message = ''.join(parameters[4:])
-                files_path = ''.join(parameters[3])
-                files_content = get_chat_files_content(files_path)
-            else:
-                self.show_cmd_not_supported_mess(cmd)
-                print('')
-                return
+        def chat_based_default_files(cmd):
+            parameters = cmd.split(' ')
+            self.change_chat_type(parameters[2], self.files_root_path)
+            print('')
 
-            prompt = \
-                "We have provided context information below: \n" \
-                "---------------------\n" \
-                "{}\n" \
-                "---------------------\n" \
-                "Given this information, Please answer my question in the same language that I used to ask you.\n" \
-                "Please answer the question: {}\n"
-
-            ans = []
-            for content in files_content:
-                message = prompt.format(content, message)
-
-                ans.append(self.chat_flow(message=message,
-                                          history=self.history,
-                                          system_prompt=self.system_prompt,
-                                          temperature=0.8,
-                                          is_print=False))
-
-            ans = ''.join(ans)
-            message = prompt.format(ans, message)
-
-            self.chat_flow(message=message,
-                           history=self.history,
-                           system_prompt=self.system_prompt,
-                           temperature=0.8,
-                           is_print=True)
+        def chat_normal():
+            self.change_chat_type(list(self.chat_all_types.keys())[0])
+            print('')
 
         def edit_cur_env_pkg_content():
             dir_path = os.path.join(self.envs_root_path, self.cur_env_name)
@@ -295,13 +272,14 @@ class Anagpt:
             self.show_cur_env_pkg_list()
             print('')
 
+            select_pkg_index = 0
             while True:
                 try:
                     select_pkg_index = int(input('Input the index:')) - 1
                 except Exception as e:
                     print(e)
                     continue
-                if select_pkg_index < len(files) and select_pkg_index >= 0:
+                if len(files) > select_pkg_index >= 0:
                     break
 
             select_pkg_name = files[select_pkg_index]
@@ -335,7 +313,7 @@ class Anagpt:
                 except Exception as e:
                     print(e)
                     continue
-                if select_index < len(model_list_dic) and select_index >= 0:
+                if len(model_list_dic) > select_index >= 0:
                     break
             model_name = list(model_list_dic.keys())[select_index]
             self.change_chat_model(model_name)
@@ -376,8 +354,10 @@ class Anagpt:
             'gpt history remove -n *': lambda cmd: confirm_and_remove_history(cmd),
             'gpt history remove -all': lambda cmd: confirm_and_remove_all_history(cmd),
 
-            # handle files-based chat
-            'gpt chat *': lambda cmd: chat_based_given_files(cmd),
+            # handle chat type
+            'gpt chat files -p *': lambda cmd: chat_based_given_files(cmd),
+            'gpt chat files': lambda cmd: chat_based_default_files(cmd),
+            'gpt chat normal': lambda cmd: chat_normal(),
 
             # create shortcut
             'gpt create shortcut': lambda cmd: create_shortcut(),
@@ -412,9 +392,12 @@ class Anagpt:
     def chat(self):
 
         while True:
-            env_name_text = self.get_color_changed_text(" (" + self.cur_env_name + ") > ")
 
-            input_fun = MultiInputInCmd(env_name_text)
+            command_first_text = \
+                self.get_color_changed_text(" (" + self.cur_env_name + ") >" +
+                                            self.chat_all_types[self.chat_type] + " ")
+
+            input_fun = MultiInputInCmd(command_first_text)
             all_input_lines = input_fun.run()
 
             if len(all_input_lines[0]) == 0:
@@ -448,10 +431,19 @@ class Anagpt:
             if not self.history:
                 self.activate_env(self.cur_env_name)
 
-            self.chat_flow(message=message,
-                           history=self.history,
-                           system_prompt=self.system_prompt,
-                           temperature=0.7)
+            if self.chat_type == list(self.chat_all_types.keys())[0]:
+                self.chat_flow(message=message,
+                               history=self.history,
+                               system_prompt=self.system_prompt,
+                               temperature=0.7)
+            elif self.chat_type == list(self.chat_all_types.keys())[1]:
+                self.chat_based_given_files(message=message,
+                               history=self.history,
+                               system_prompt=self.system_prompt,
+                               temperature=0.7)
+            else:
+                print('chat type ' + self.chat_type + ' is not supported!')
+
 
             # generate history name
             if not self.history_name:
@@ -464,28 +456,11 @@ class Anagpt:
 
     def chat_flow(self, message, history, system_prompt, temperature, is_print=True):
         cursor_thread = None
+        model_thinking = None
         if is_print:
-            # Define cursor states
-            CURSOR_STATES = ['-', '\\', '|', '/']
-
-            # Define global variable to control the running state of the thread
-            running = True
-
-            # Define the spinning cursor function and wrap it in a thread
-            def spinning_cursor():
-                while running:
-                    for cursor in CURSOR_STATES:
-                        # Output cursor state and flush output
-                        sys.stdout.write('\r' + cursor)
-                        sys.stdout.flush()
-
-                        # Wait for a short period of time
-                        time.sleep(0.1)
-                sys.stdout.write('\r' + '')
-                sys.stdout.flush()
-
+            model_thinking = Thinking()
             # Create and start the spinning cursor thread
-            cursor_thread = threading.Thread(target=spinning_cursor)
+            cursor_thread = threading.Thread(target=model_thinking.spinning_cursor)
             cursor_thread.start()
 
         last_index = 0
@@ -493,7 +468,7 @@ class Anagpt:
         for chatbot, history, statusDisplay in self.chat_model.predict(message, chatbot=chatbot, history=history,
                                                        system_prompt=system_prompt, temperature=temperature):
             if is_print:
-                running = False
+                model_thinking.stop()
                 cursor_thread.join()
 
             if self.cancel_output:
@@ -509,6 +484,61 @@ class Anagpt:
             print('\n')
 
         return chatbot[0][1]
+
+    def chat_based_given_files(self, message, history, system_prompt, temperature, is_print=True):
+
+        files_analyzing = FilesAnalyzing()
+        # Create and start the spinning cursor thread
+        cursor_thread = threading.Thread(target=files_analyzing.spinning_cursor)
+        cursor_thread.start()
+
+        prompt = \
+            "We have provided context information below: \n" \
+            "---------------------\n" \
+            "{}\n" \
+            "---------------------\n" \
+            "Given this information, Please answer my question in the same language that I used to ask you.\n" \
+            "Please answer the question: {}\n"
+
+        ans = []
+        for content in self.chat_files_content:
+            message = prompt.format(content, message)
+
+            ans.append(self.chat_flow(message=message,
+                                      history=history,
+                                      system_prompt=system_prompt,
+                                      temperature=temperature,
+                                      is_print=False))
+
+        files_analyzing.stop()
+        cursor_thread.join()
+
+        ans = ''.join(ans)
+        message = prompt.format(ans, message)
+
+        self.chat_flow(message=message,
+                       history=history,
+                       system_prompt=system_prompt,
+                       temperature=0.8,
+                       is_print=is_print)
+
+    def change_chat_type(self, chat_type, files_path=None):
+        if chat_type in self.chat_all_types:
+            self.chat_type = chat_type
+            if chat_type == list(self.chat_all_types.keys())[1]:
+
+                files_loading = FilesLoading()
+                # Create and start the spinning cursor thread
+                cursor_thread = threading.Thread(target=files_loading.spinning_cursor)
+                cursor_thread.start()
+                self.chat_files_content = get_chat_files_content(files_path)
+                files_loading.stop()
+                cursor_thread.join()
+
+            else:
+                self.chat_files_content = None
+        else:
+            print(chat_type + ' is no supported!')
 
     def set_history_name(self):
         # message = ''.join(self.history[:2])

@@ -3,7 +3,8 @@ config_private.py
 chat_online.py
 /ico/anagpt.pptx
 .idea
-/history
+/history/
+/files/
 /envs/test
 /system/
 /models/chatglm/
