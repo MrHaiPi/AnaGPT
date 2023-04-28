@@ -97,6 +97,7 @@ class Anagpt:
                 self.remove_env(parameter)
             else:
                 self.show_cmd_canceled_mess(cmd)
+            print('')
 
         def show_cur_env_pkg_list():
             self.show_cur_env_pkg_list()
@@ -803,6 +804,8 @@ class Anagpt:
             if folder:
                 shutil.rmtree(path)
                 print('Remove ', env_name, 'successfully')
+            else:
+                print('Env ', env_name, 'is not exist!')
         except Exception as e:
             print(e)
 
