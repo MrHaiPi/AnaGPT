@@ -529,8 +529,7 @@ class Anagpt:
         cursor_thread.join()
 
         ans = ''.join(ans)
-        second_query = 'Please summarize and organize the logic of the above content in a more academic tone ' \
-                       'as few words as possible.'
+        second_query = 'Please summarize and organize the logic of the above content in a more academic tone.'
         second_query = second_query + '\n' + ans
         self.chat_flow(message=second_query,
                        history=history,
