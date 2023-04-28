@@ -532,12 +532,11 @@ class Anagpt:
         second_query = 'Please summarize and organize the logic of the above content in a more academic tone ' \
                        'as few words as possible.'
         second_query = second_query + '\n' + ans
-        ans = self.chat_flow(message=second_query,
-                             history=history,
-                             system_prompt=system_prompt,
-                             temperature=temperature,
-                             is_print=is_print)
-
+        self.chat_flow(message=second_query,
+                       history=history,
+                       system_prompt=system_prompt,
+                       temperature=temperature,
+                       is_print=is_print)
 
     def change_chat_type(self, chat_type, files_path=None):
         if chat_type in self.chat_all_types:
