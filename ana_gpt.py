@@ -46,6 +46,9 @@ class Anagpt:
         self.files_root_path = os.path.join(os.getcwd(), 'files')
         if not os.path.exists(self.files_root_path):
             os.makedirs(self.files_root_path)
+        self.help_root_path = os.path.join(os.getcwd(), 'help')
+        if not os.path.exists(self.help_root_path):
+            os.makedirs(self.help_root_path)
 
         self.version = 'AnaGPT ' + version
         self.base_env_name = 'base'
@@ -112,23 +115,34 @@ class Anagpt:
             self.clear_screen_and_history()
 
         def show_help_content():
-            content = self.get_function_body(__file__, 'get_all_command_keyboards')
-            prompt = "Understand the given information aboved and then answer the question:" \
-                     "'What commands and keyboards can users enter or push'. \n " \
-                     "You should explain the functions and list all of the commands and keyboards one by one. " \
-                     "Please note that you must understand all the content before answering the question, and " \
-                     "cannot just only focus on the commands and keyboards variables. " \
-                     "For all the commands containing '*', you should also clarify their specific meanings and " \
-                     "provide examples for use just behind the explanation of the commands"
-            message = content + f'\n' + prompt
 
-            self.chat_flow(message=message,
-                           history=[],
-                           system_prompt='',
-                           temperature=0.1)
+            # content = self.get_function_body(__file__, 'get_all_command_keyboards')
+            # prompt = "Understand the given information above and then answer the question:" \
+            #          "'What commands and keyboards can users enter or push？'. \n " \
+            #          "You should explain the functions and list all of the commands and keyboards one by one. " \
+            #          "Please note that you must understand all the content before answering the question, and " \
+            #          "cannot just only focus on the commands and keyboards variables. " \
+            #          "For all the commands containing '*', you should also clarify their specific meanings and " \
+            #          "provide examples for use just behind the explanation of the commands"
+            # message = content + f'\n' + prompt
+            #
+            # self.chat_flow(message=message,
+            #                history=[],
+            #                system_prompt='',
+            #                temperature=0.1)
+
+            f = open(os.path.join(self.help_root_path, 'commands_and_keyboards'), "r", encoding="utf-8")
+            help_content = f.read()
+            f.close()
+            print(help_content)
+            print('')
 
         def show_named_help_content(cmd):
-            help_content = self.get_function_body(__file__, 'get_all_command_keyboards')
+            # help_content = self.get_function_body(__file__, 'get_all_command_keyboards')
+
+            f = open(os.path.join(self.help_root_path, 'commands_and_keyboards'), "r", encoding="utf-8")
+            help_content = f.read()
+            f.close()
 
             parameter = cmd.split(' ')[3:]
 
@@ -319,6 +333,10 @@ class Anagpt:
             self.change_chat_model(model_name)
             self.clear_screen_and_history()
 
+        def on_cancel_output_flow(key):
+            if keyboard.is_pressed('ctrl+shift'):
+                self.cancel_output = True
+
         commands = {
 
             # handle system
@@ -366,10 +384,6 @@ class Anagpt:
             'gpt model change': lambda cmd: change_chat_model(),
             'gpt model list': lambda cmd: show_chat_model_list(),
         }
-
-        def on_cancel_output_flow(key):
-            if keyboard.is_pressed('ctrl+shift'):
-                self.cancel_output = True
 
         keyboards = {
             'ctrl+shift': on_cancel_output_flow

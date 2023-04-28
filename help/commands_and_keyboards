@@ -1,0 +1,31 @@
+    Commands:
+    gpt -version: show the current version of the tool
+    gpt env list: show the list of created environments
+    gpt env list -des: show the list of created environments with descriptions
+    gpt create -n *: create a new environment with the given name (specified by *)
+    gpt activate *: activate the environment with the given name (specified by *)
+    gpt deactivate: deactivate the current environment
+    gpt remove -n *: remove the environment with the given name (specified by *)
+    gpt help: show the help content
+    gpt help -n *: show the help content for the command with the given name (specified by *)
+    gpt install -n *: install the package with the given name (specified by *)
+    gpt uninstall -n *: uninstall the package with the given name (specified by *)
+    gpt list: show the list of packages installed in the current environment
+    gpt vim: edit the configuration file for the current environment
+    gpt pkgs update: update the list of locally available packages
+    gpt pkgs list: show the list of locally available packages
+    gpt pkgs list -des *: show the description of the locally available package with the given name (specified by *)
+    gpt clear: clear the screen and command history
+    gpt history list: show the list of command history
+    gpt history recover: recover the command history
+    gpt history remove -n *: remove the command history with the given name (specified by *)
+    gpt history remove -all: remove all command history
+    gpt chat files -p *: start a chat session with the given file path (specified by *)
+    gpt chat files: start a chat session with the default files
+    gpt chat normal: start a normal chat session
+    gpt create shortcut: create a shortcut for the tool
+    gpt model change: change the chat model used by the tool
+    gpt model list: show the list of available chat models
+
+    Keyboard shortcuts:
+    ctrl+shift: cancel the output flow
