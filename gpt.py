@@ -50,7 +50,7 @@ class GPT:
 
         self.model = Llama(model_path=model_path,
                            n_ctx=self.windows_length,
-                           use_mlock=True)
+                           use_mlock=False)
 
     def predict(self, prompt, system_prompt='', temperature=0.8, stream=True, chatbot=[], history=[]):
         system_prompt = "Below is an instruction/prompt that describes a task. Write a response that appropriately " \

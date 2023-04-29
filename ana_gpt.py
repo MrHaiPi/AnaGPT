@@ -332,8 +332,13 @@ class Anagpt:
                 if len(model_list_dic) > select_index >= 0:
                     break
             model_name = list(model_list_dic.keys())[select_index]
-            self.change_chat_model(model_name)
-            self.clear_screen_and_history()
+
+            if self.change_chat_model(model_name):
+                self.clear_screen_and_history()
+            else:
+                print('')
+                print(self.get_color_changed_text('>>>Model Change Failed<<<', 'red'))
+                print('')
 
         def on_cancel_output_flow(key):
             if keyboard.is_pressed('ctrl+shift'):
@@ -723,6 +728,8 @@ class Anagpt:
     def get_color_changed_text(self, text, color='green'):
         if color == 'green':
             return "\033[32m" + text + "\033[0m"
+        elif color == 'red':
+            return "\033[31m" + text + "\033[0m"
 
     def linux_to_cmd(self, linux_cmd):
         """
@@ -1122,6 +1129,7 @@ class Anagpt:
             print(str(i + 1) + '.' + key)
 
     def change_chat_model(self, model_name):
+        last_model_name = self.chat_model.name
         try:
             model_list_dic = gpt.MODEL_LIST
             if model_name not in model_list_dic:
@@ -1129,9 +1137,13 @@ class Anagpt:
                 return
 
             # free memory
-            del self.chat_model
-            gc.collect()
+            if hasattr(self, 'chat_model'):
+                del self.chat_model
+                gc.collect()
 
             self.chat_model = GPT(model_name)
+            return True
         except Exception as e:
             print(e)
+            self.chat_model = GPT(last_model_name)
+            return False
