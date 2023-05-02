@@ -516,9 +516,9 @@ class Anagpt:
         prompt = \
             "Given below information, please use the least words to answer my question ,'{}', in one paragraph. " \
             "Please note that you can only answer my question based on the following content. {} \n" \
-            "---------------------\n" \
+            "\n" \
             "{}\n" \
-            "---------------------\n"
+            "\n"
 
         answer_part = []
         for content in self.chat_files_content:
