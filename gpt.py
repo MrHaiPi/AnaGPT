@@ -13,6 +13,8 @@ MODEL_LIST = \
                 'vicuna-7b-int4 (llama.cpp CPU 6G RAM, EN/poor CN)': "vicuna('vicuna-7b-int4')",
                 'vicuna-13b-int4 (llama.cpp CPU 10G RAM, EN/poor CN)': "vicuna('vicuna-13b-int4')",
 
+                'chinese-vicuna-13b-int4 (llama.cpp CPU 10G RAM, EN/CN)': "chinese_vicuna('chinese-vicuna-13b-int4')",
+
                 'chinese-chat-llama-7b-int4 (llama.cpp CPU 6G RAM, EN/CN)': "chinese_chat_llama('chinese-chat-llama-7b-int4')",
 
                 'chatglm-6b-int4 (CPU 6G RAM, EN/CN)': "chatglm('chatglm-6b-int4', device='cpu')",
@@ -111,6 +113,11 @@ class GPT:
 
     def vicuna(self, model_name):
         path = os.path.join('models', 'vicuna', model_name, 'ggml-vicuna-4bit-rev1.bin')
+        self.load_ggml_model(path)
+        return self.predict
+
+    def chinese_vicuna(self, model_name):
+        path = os.path.join('models', 'chinese_vicuna', model_name, 'vicuna-13B-chinese.bin')
         self.load_ggml_model(path)
         return self.predict
 
