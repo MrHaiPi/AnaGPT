@@ -662,7 +662,8 @@ class Anagpt:
                 'When you are confused about which prompt/instruction to answer based on, you need to ask users, '
                 'and in this case, you must list all the prompts/instructions options in short words for users to '
                 'choose from.'
-                'Do not remind users the prompt/instruction in your answer like this: "[prompt/instruction] bla bla bla..."!!, '
+                'Do not remind users the prompt/instruction in your answer like this: '
+                '"[prompt/instruction] bla bla bla..."!!, '
                 'just directly answer "bla bla bla...". '
                 'Do not reply the prompt/instruction you have chosen in your answer!! '
                 'Do not explain why you have chosen it!!]')
