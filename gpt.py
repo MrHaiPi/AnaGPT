@@ -73,7 +73,8 @@ class GPT:
             else:
                 all_prompt += bot_state + message
 
-        stop_string_list = [user_state, bot_state, user_state[:-1] + '：', bot_state[:-1] + '：', '###', 'User:', 'User：']
+        stop_string_list = [user_state, bot_state, user_state[:-1] + '：', bot_state[:-1] + '：', '###',
+                            'User:', 'User：', 'Assistant:', 'Assistant：']
 
         if not self.tokenizer:
             flow = self.model(all_prompt, temperature=temperature, max_tokens=1024,
