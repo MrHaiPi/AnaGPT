@@ -5,7 +5,7 @@ from models.chat_gpt.chat_gpt import chat_gpt
 MODEL_LIST = \
             {
                 'gpt-3.5-turbo (chatGPT API, EN/CN...)': "chat_gpt('gpt-3.5-turbo')",
-                'gpt-4 (chatGPT API, EN/CN...)': "my_chat_gpt('gpt-4')",
+                'gpt-4 (chatGPT API, EN/CN...)': "chat_gpt('gpt-4')",
 
                 'chinese-alpaca-7b-int4 (llama.cpp CPU 6G RAM, EN/CN)': "chinese_alpaca('chinese-alpaca-7b-int4')",
                 'chinese-alpaca-13b-int4 (llama.cpp CPU 10G RAM, EN/CN)': "chinese_alpaca('chinese-alpaca-13b-int4')",
@@ -21,6 +21,9 @@ MODEL_LIST = \
                 'chatglm-6b-int4 (GPU 6G VRAM, EN/CN)': "chatglm('chatglm-6b-int4', device='cuda')",
 
                 'gpt-for-all-int4 (llama.cpp CPU 6G RAM, EN)': "gpt_for_all('gpt-for-all-int4')",
+
+                #'stablelm-base-alpha-3b-int5 (llama.cpp CPU 6G RAM, EN)': "stablelm('stablelm-base-alpha-3b')",
+                #'stablelm-base-alpha-7b-int4 (llama.cpp CPU 6G RAM, EN)': "stablelm('stablelm-base-alpha-7b')",
             }
 
 
@@ -133,6 +136,11 @@ class GPT:
 
     def gpt_for_all(self, model_name):
         path = os.path.join('models', 'gpt_for_all', model_name, 'ggml-gpt4all-q4_0.bin')
+        self.load_ggml_model(path)
+        return self.predict
+
+    def stablelm(self, model_name):
+        path = os.path.join('models', 'stablelm', model_name, 'ggml-model.bin')
         self.load_ggml_model(path)
         return self.predict
 

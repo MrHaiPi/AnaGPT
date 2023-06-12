@@ -46,7 +46,7 @@ class chat_gpt:
 
         # 一分钟只能调用3次API, 平均每次20秒
         while time.time() - self.last_predict_time <= 22:
-            time.sleep(1)
+            time.sleep(0.5)
         self.last_predict_time = time.time()
 
         if stream:

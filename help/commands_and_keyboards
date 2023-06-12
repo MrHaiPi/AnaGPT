@@ -23,9 +23,11 @@
     gpt chat files -p *: start a chat session with the given file path (specified by *)
     gpt chat files: start a chat session with the default files
     gpt chat normal: start a normal chat session
+    gpt chat single: start a single round chat session (can save the tokens used)
     gpt create shortcut: create a shortcut for the tool
     gpt model change: change the chat model used by the tool
     gpt model list: show the list of available chat models
+    gpt model -temp *: change the chat model temperature
 
     Keyboard shortcuts:
     ctrl+shift: cancel the output flow

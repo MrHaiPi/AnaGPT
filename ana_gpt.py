@@ -59,8 +59,9 @@ class Anagpt:
         self.system_prompt = None
         self.chat_model = GPT()
         self.cancel_output = False
+        self.gpt_temperature = 0.7
 
-        self.chat_all_types = {'normal': '', 'files': '📑', 'online': '🌐'}
+        self.chat_all_types = {'normal': '💬', 'single': '🍀', 'files': '📑', 'online': '🌐'}
         self.chat_type = list(self.chat_all_types.keys())[0]
         self.chat_files_content = None
 
@@ -274,8 +275,14 @@ class Anagpt:
             self.change_chat_type(parameters[2], self.files_root_path)
             print('')
 
-        def chat_normal():
-            self.change_chat_type(list(self.chat_all_types.keys())[0])
+        def chat_normal(cmd):
+            parameters = cmd.split(' ')
+            self.change_chat_type(parameters[2])
+            print('')
+
+        def chat_single(cmd):
+            parameters = cmd.split(' ')
+            self.change_chat_type(parameters[2])
             print('')
 
         def edit_cur_env_pkg_content():
@@ -314,6 +321,17 @@ class Anagpt:
 
         def show_chat_model_list():
             self.show_chat_model_list()
+            print('')
+
+        def change_model_temp(cmd):
+            parameters = cmd.split(' ')
+            temp = float(parameters[3])
+            if temp < 0:
+                temp = 0
+            elif temp > 1:
+                temp = 1
+            self.change_model_temp(temp)
+            print('Changed model temperature to {}'.format(temp))
             print('')
 
         def change_chat_model():
@@ -382,7 +400,8 @@ class Anagpt:
             # handle chat type
             'gpt chat files -p *': lambda cmd: chat_based_given_files(cmd),
             'gpt chat files': lambda cmd: chat_based_default_files(cmd),
-            'gpt chat normal': lambda cmd: chat_normal(),
+            'gpt chat normal': lambda cmd: chat_normal(cmd),
+            'gpt chat single': lambda cmd: chat_single(cmd),
 
             # create shortcut
             'gpt create shortcut': lambda cmd: create_shortcut(),
@@ -390,6 +409,7 @@ class Anagpt:
             # handle model
             'gpt model change': lambda cmd: change_chat_model(),
             'gpt model list': lambda cmd: show_chat_model_list(),
+            'gpt model -temp *': lambda cmd: change_model_temp(cmd),
         }
 
         keyboards = {
@@ -456,17 +476,22 @@ class Anagpt:
                 self.chat_flow(message=message,
                                history=self.history,
                                system_prompt=self.system_prompt,
-                               temperature=0.7)
+                               temperature=self.gpt_temperature)
             elif self.chat_type == list(self.chat_all_types.keys())[1]:
+                self.chat_flow(message=message,
+                               history=[],
+                               system_prompt=self.system_prompt,
+                               temperature=self.gpt_temperature)
+            elif self.chat_type == list(self.chat_all_types.keys())[2]:
                 self.chat_based_given_files(message=message,
                                             history=self.history,
                                             system_prompt=self.system_prompt,
-                                            temperature=0.7)
+                                            temperature=self.gpt_temperature)
             else:
                 print('chat type ' + self.chat_type + ' is not supported!')
 
             # generate history name
-            if not self.history_name:
+            if not self.history_name and len(self.history) > 0:
                 thread = threading.Thread(target=self.set_history_name)
                 thread.start()
             # save chat history
@@ -550,8 +575,14 @@ class Anagpt:
     def change_chat_type(self, chat_type, files_path=None):
         if chat_type in self.chat_all_types:
             self.chat_type = chat_type
-            if chat_type == list(self.chat_all_types.keys())[1]:
+            if chat_type == list(self.chat_all_types.keys())[0]:
+                self.chat_files_content = None
 
+            elif chat_type == list(self.chat_all_types.keys())[1]:
+                self.chat_files_content = None
+                self.history = []
+
+            elif chat_type == list(self.chat_all_types.keys())[2]:
                 files_loading = FilesLoading()
                 # Create and start the spinning cursor thread
                 cursor_thread = threading.Thread(target=files_loading.spinning_cursor)
@@ -560,7 +591,7 @@ class Anagpt:
                 files_loading.stop()
                 cursor_thread.join()
 
-            else:
+            elif chat_type == list(self.chat_all_types.keys())[3]:
                 self.chat_files_content = None
         else:
             print(chat_type + ' is no supported!')
@@ -693,7 +724,7 @@ class Anagpt:
         print(self.get_color_changed_text(text))
 
     def show_version(self, change_color=False):
-        text = f'{self.version}, Model: {self.chat_model.name}'
+        text = f'{self.version}, Model: {self.chat_model.name}, Temperature: {self.gpt_temperature}'
         if change_color:
             text = self.get_color_changed_text(text)
         print(text)
@@ -1114,6 +1145,9 @@ class Anagpt:
         model_list_dic = gpt.MODEL_LIST
         for i, key in enumerate(model_list_dic):
             print(str(i + 1) + '.' + key)
+
+    def change_model_temp(self, temp):
+        self.gpt_temperature = temp
 
     def change_chat_model(self, model_name):
         last_model_name = self.chat_model.name
