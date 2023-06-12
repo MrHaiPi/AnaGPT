@@ -52,6 +52,11 @@
 
 ![Models](example/model.jpg)
 
+<h2 id="News"> 
+🐳 News
+</h2>
+
+- 2023.6.12 增添了单次问询功能，防止历史信息多次输入导致token浪费
 
 ## 👋🏼 Intro
 

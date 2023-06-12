@@ -580,7 +580,7 @@ class Anagpt:
 
             elif chat_type == list(self.chat_all_types.keys())[1]:
                 self.chat_files_content = None
-                self.history = []
+                self.clear_history()
 
             elif chat_type == list(self.chat_all_types.keys())[2]:
                 files_loading = FilesLoading()
@@ -1037,13 +1037,18 @@ class Anagpt:
     def save_last_model_env_name_content(self):
 
         try:
+
             content = {}
             content['chat_model'] = self.chat_model.name
+            content['gpt_temperature'] = self.gpt_temperature
+            content['chat_type'] = self.chat_type
             content['env_name'] = self.cur_env_name
             content['env_content'] = self.system_prompt
 
             with open(os.path.join(self.sys_root_path, 'last_information'), 'w', encoding="utf-8") as f:
-                f.write(str(content))
+                json_str = json.dumps(content, indent=0, ensure_ascii=False)
+                f.write(json_str)
+                f.write('\n')
             f.close()
 
         except Exception as e:
@@ -1060,6 +1065,8 @@ class Anagpt:
             f.close()
             content = ast.literal_eval(content)
             self.change_chat_model(content['chat_model'])
+            self.change_model_temp(content['gpt_temperature'])
+            self.change_chat_type(content['chat_type'])
             self.activate_env(content['env_name'])
 
         except Exception as e:
