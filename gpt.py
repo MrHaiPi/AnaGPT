@@ -59,9 +59,9 @@ class GPT:
 
     def predict(self, prompt, system_prompt='', temperature=0.8, stream=True, chatbot=[], history=[]):
         system_prompt = "Below is an instruction/prompt that describes a task. Write a response that appropriately " \
-                        "completes the request. \n" + system_prompt
+                        "completes the request. \n\n" + system_prompt
 
-        system_prompt += '\n'
+        system_prompt += '\n\n'
 
         statusDisplay = ''
 

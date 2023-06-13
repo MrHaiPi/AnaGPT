@@ -27,7 +27,7 @@
     gpt create shortcut: create a shortcut for the tool
     gpt model change: change the chat model used by the tool
     gpt model list: show the list of available chat models
-    gpt model -temp *: change the chat model temperature
+    gpt model -temp *: change the chat model temperature (specified by *)
 
     Keyboard shortcuts:
     ctrl+shift: cancel the output flow

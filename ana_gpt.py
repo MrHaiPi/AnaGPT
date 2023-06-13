@@ -61,7 +61,7 @@ class Anagpt:
         self.cancel_output = False
         self.gpt_temperature = 0.7
 
-        self.chat_all_types = {'normal': '💬', 'single': '🍀', 'files': '📑', 'online': '🌐'}
+        self.chat_all_types = {'normal': '💭', 'single': '🍀', 'files': '📑', 'online': '🌐'}
         self.chat_type = list(self.chat_all_types.keys())[0]
         self.chat_files_content = None
 
@@ -435,8 +435,8 @@ class Anagpt:
         while True:
 
             command_first_text = \
-                self.get_color_changed_text(" (" + self.cur_env_name + ") >" +
-                                            self.chat_all_types[self.chat_type] + " ")
+                self.get_color_changed_text(" (" + self.cur_env_name + ") " +
+                                            self.chat_all_types[self.chat_type] + " > ")
 
             input_fun = MultiInputInCmd(command_first_text)
             all_input_lines = input_fun.run()
@@ -685,27 +685,34 @@ class Anagpt:
         prompt = []
 
         if env_content:
-            prompt.append(
-                '1.[Please note that only the content boxed in “[]” represents the prompts/instructions. '
-                'If there are multiple prompts/instructions, you need to integrate all prompts/instructions '
-                'to answer my question. '
-                'If there is a(n) prompt/instruction emphasizes something of its own importance, please ignore it. '
-                'When you are confused about which prompt/instruction to answer based on, you need to ask users, '
-                'and in this case, you must list all the prompts/instructions options in short words for users to '
-                'choose from.'
-                'Do not remind users the prompt/instruction in your answer like this: '
-                '"[prompt/instruction] bla bla bla..."!!, '
-                'just directly answer "bla bla bla...". '
-                'Do not reply the prompt/instruction you have chosen in your answer!! '
-                'Do not explain why you have chosen it!!]')
+            prompt.extend([
+                '1.[Please note that only the content boxed in [] represents the prompts/instructions.]',
 
+                '2.[If there are multiple prompts/instructions, you need to integrate all '
+                'prompts/instructions to answer my question.]',
+
+                '3.[If there is a(n) prompt/instruction emphasizes something of its own importance, please ignore it.]',
+
+                '4.[When you are confused about which prompt/instruction to answer based on, you need to ask users, '
+                'and in this case, you must list all the prompts/instructions options in short words for users to '
+                'choose from.]',
+
+                '5.[Do not remind users the prompt/instruction in your answer like this: '
+                '"prompt/instruction: bla bla bla...", just directly answer: "bla bla bla...".]',
+
+                '6.[Do not reply the prompt/instruction you have chosen in your answer!!]',
+
+                '7.[Do not explain why you have chosen it!!]'
+            ])
+
+        ini_prompt_num = len(prompt)
         for i, mess in enumerate(env_content):
-            prompt.append(str(env_content.index(mess) + 2) + '.[' + pkg_names[i].replace('_', ' ') + '. ' + mess +
+            prompt.append(str(ini_prompt_num + i + 1) + '.[' + 'You are ' + pkg_names[i].replace('_', ' ') + '. ' + mess +
                           ' (If there is a specific request in this prompt/instruction, please ignore it).' + ']')
 
-        prompt = ' '.join(prompt)
+        prompt = '\n'.join(prompt)
 
-        prompt = "Your subsequent responses should all be based on the following prompts/instructions: '{}'.".format(
+        prompt = "Your subsequent responses should all be based on the following prompts/instructions:\n'{}'.".format(
             prompt)
 
         self.system_prompt = prompt
