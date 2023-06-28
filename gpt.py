@@ -20,6 +20,9 @@ MODEL_LIST = \
                 'chatglm-6b-int4 (CPU 6G RAM, EN/CN)': "chatglm('chatglm-6b-int4', device='cpu')",
                 'chatglm-6b-int4 (GPU 6G VRAM, EN/CN)': "chatglm('chatglm-6b-int4', device='cuda')",
 
+                'chatglm2-6b-int4 (CPU 6G RAM, EN/CN)': "chatglm2('chatglm2-6b-int4', device='cpu')",
+                'chatglm2-6b-int4 (GPU 6G VRAM, EN/CN)': "chatglm2('chatglm2-6b-int4', device='cuda')",
+
                 'gpt-for-all-int4 (llama.cpp CPU 6G RAM, EN)': "gpt_for_all('gpt-for-all-int4')",
 
                 #'stablelm-base-alpha-3b-int5 (llama.cpp CPU 6G RAM, EN)': "stablelm('stablelm-base-alpha-3b')",
@@ -131,6 +134,11 @@ class GPT:
 
     def chatglm(self, model_name, device):
         path = os.path.join('models', 'chatglm', model_name)
+        self.load_model(path, device)
+        return self.predict
+
+    def chatglm2(self, model_name, device):
+        path = os.path.join('models', 'chatglm2', model_name)
         self.load_model(path, device)
         return self.predict
 
