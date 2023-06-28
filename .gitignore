@@ -8,6 +8,7 @@ chat_online.py
 /envs/test
 /system/
 /models/chatglm/
+/models/chatglm2/
 /models/chinese_alpaca/
 /models/chinese_chat_llama/
 /models/gpt4free/
